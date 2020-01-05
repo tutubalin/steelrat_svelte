@@ -1,6 +1,6 @@
 <script>
-	import Chapter from './Chapter.svelte'
-	import chapters from './chapters.js'
+	import Chapter from './Chapter.svelte';
+	import { afterUpdate } from 'svelte';
 
 	let story;
 
@@ -11,17 +11,32 @@
 		story = [0];
 	}
 
-	let current_chapter = story[story.length-1];
+	let currentChapter = story[story.length-1];
+
+	let div;
+	let autoScroll = false;
+
+	afterUpdate(() => {
+		if (autoScroll) {
+			div.scrollTo(0, div.scrollHeight);
+			autoScroll = false;
+		}
+	});
 
 	function handleMove(event) {
-		current_chapter = event.detail;
-		story.push(+current_chapter);
+		currentChapter = event.detail;
+		story = [...story, +currentChapter];
 		localStorage.setItem("story", JSON.stringify(story));
+		autoScroll = true;
 	}
 </script>
 
 <main>
-	<Chapter text="{chapters[current_chapter]}" on:move="{handleMove}"/>
+	<div bind:this="{div}">
+		{#each story as chapter}
+		<Chapter number="{chapter}" active="{chapter==currentChapter}" on:move="{handleMove}"/>
+		{/each}
+	</div>
 </main>
 
 <style>

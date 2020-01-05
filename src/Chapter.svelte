@@ -1,8 +1,17 @@
+<script context="module">
+    import chapters from './chapters.js'
+</script>
+
 <script>
 
     import { createEventDispatcher } from 'svelte';
 
-    export let text;
+    export let number;
+    export let active;
+
+    let text;
+
+    $: text = chapters[number];
 
     const eventDispatcher = createEventDispatcher();
 
@@ -11,15 +20,14 @@
     }
 </script>
 
-<div>
+<div class:passive="{!active}">
     {#each text.split("\n") as line}
         <p>
         {#each line.split(/#(\d+)/) as chunk, index}
-            {#if index&1}
-            <!--<a href on:click="{handleClick}">{chunk}</a>-->
-            <button on:click="{handleClick(chunk)}">{chunk}</button>
+            {#if active && (index&1)}
+                <button on:click="{handleClick(chunk)}">{chunk}</button>
             {:else}
-            {chunk}
+                {chunk}
             {/if}
         {/each}
         </p>
@@ -27,6 +35,11 @@
 </div>
 
 <style>
+
+    .passive {
+        opacity: 0.4;
+    }
+
     button {
         margin: 0;
         padding: 0 1em 0 1em;
@@ -50,7 +63,7 @@
         background-color: #e8e8e8;
         width: 50%;
         margin: auto;
-        margin-top: 4em;
+        margin-top: 5pt;
         margin-bottom: auto;
         /* display: table-cell;
         vertical-align: center; */
