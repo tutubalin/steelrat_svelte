@@ -29,9 +29,19 @@
 		localStorage.setItem("story", JSON.stringify(story));
 		autoScroll = true;
 	}
+
+	function resetStory(event) {
+		story = [0];
+		localStorage.setItem("story", JSON.stringify(story));
+		currentChapter = 0;
+	}
+
 </script>
 
 <main>
+	<div class="navigation">
+		<button on:click="{resetStory}">Начать сначала</button>
+	</div>
 	<div bind:this="{div}">
 		{#each story as chapter}
 		<Chapter number="{chapter}" active="{chapter==currentChapter}" on:move="{handleMove}"/>
@@ -40,6 +50,20 @@
 </main>
 
 <style>
+
+	.navigation {
+		position: sticky;
+		top: 1em;
+		left: 1em;
+		text-align: left;
+	}
+
+	.navigation > button {
+		margin: 1em;
+		left: 1em;
+	}
+
+
 	main {
 		text-align: center;
 		margin: 0;
